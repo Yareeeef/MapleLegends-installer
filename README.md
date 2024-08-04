@@ -73,7 +73,7 @@ It'll attempt to detect the current installation. If it can't, it'll ask you whe
 
 I made my very first online friends on old school MapleStory, and MapleLegends community is very warm and welcoming too! I hope this project helps more people enjoy the game.
 
-That said, I am juggling between living in a warzone and a full time job, so I may not be the fastest to update the script when a new version of MapleLegends is released.
+That said, I am juggling between some personal stuff and a full time job, so I may not be the fastest to update the script when a new version of MapleLegends is released.
 
 It should be super easy to DIY tho. Assuming nothing changes with how the game itself is packaged, you can update the script like so:
 1. Go to https://forum.maplelegends.com/index.php?threads/new-full-version-july-14-2024.23264/ and find the url for the MAC Wineskin version.

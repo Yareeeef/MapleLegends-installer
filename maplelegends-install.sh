@@ -94,12 +94,13 @@ run() {
             if ! git -C "$script_dir" diff --exit-code --quiet \
                 || ! git -C "$script_dir" diff --exit-code --cached --quiet; then
                 echo "Cheeky cheeky! Can't update because you have some local changes." >&2
+                echo "Use 'git status' to see whats up." >&2
                 rm -rf "$update_dir"
                 exit 1
             fi
             # note, use --ff-only to avoid implicitly creating merge commits,
             # rebasing or overwriting local changes.
-            if ! git -C "$update_dir" pull origin main --ff-only; then
+            if ! git -C "$update_dir" pull origin main --ff-only --quiet; then
                 echo "Failed to update. Try running \"git pull origin main --ff-only\" manually." >&2
                 rm -rf "$update_dir"
                 exit 1

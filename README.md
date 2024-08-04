@@ -1,5 +1,6 @@
 ![maplelegends_installer_logo](https://github.com/user-attachments/assets/42a7a201-8732-45cf-bfcb-0ce4c96cdbff)
-![GitHub License](https://img.shields.io/github/license/Yareeeef/MapleLegends-installer) ![GitHub Release](https://img.shields.io/github/v/release/Yareeeef/MapleLegends-installer)
+![GitHub License](https://img.shields.io/github/license/Yareeeef/MapleLegends-installer) ![Game Version](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FYareeeef%2FMapleLegends-installer%2Fmain%2Fversion.yml&query=%24.version&label=game%20version) ![Made with Love](https://img.shields.io/badge/made_with-%E2%9D%A4%EF%B8%8F-red)
+
 
 Install MapleLegends on Linux. Play some nostalgic MapleStory!
 

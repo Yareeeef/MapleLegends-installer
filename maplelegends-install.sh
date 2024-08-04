@@ -98,15 +98,25 @@ run() {
                 rm -rf "$update_dir"
                 exit 1
             fi
-            # note, use --ff-only to avoid implicitly creating merge commits,
-            # rebasing or overwriting local changes.
-            if ! git -C "$update_dir" pull origin main --ff-only --quiet; then
-                echo "Failed to update. Try running \"git pull origin main --ff-only\" manually." >&2
+
+            if ! git -C "$update_dir" fetch origin main; then
+                echo "Failed to fetch updates. Try running \"git fetch origin main\" manually." >&2
                 rm -rf "$update_dir"
                 exit 1
             fi
 
-            new_commit=$(git -C "$script_dir" rev-parse HEAD)
+            local_head=$(git -C "$update_dir" rev-parse HEAD)
+            remote_head=$(git -C "$update_dir" rev-parse FETCH_HEAD)
+            if [ "$local_head" != "$remote_head" ]; then
+                if ! git -C "$update_dir" merge FETCH_HEAD --ff-only; then
+                    echo "Failed to update. You might not be on 'main' branch or your commit history has diverged." >&2
+                    echo "You can try a potentially destructive 'git reset --hard FETCH_HEAD'. Use at your own risk." >&2
+                    rm -rf "$update_dir"
+                    exit 1
+                fi
+            fi
+
+            new_commit=$(git -C "$update_dir" rev-parse HEAD)
             if [ "$current_commit" = "$new_commit" ]; then
                 echo "Already up-to-date."
                 rm -rf "$update_dir"

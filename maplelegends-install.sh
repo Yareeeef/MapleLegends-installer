@@ -175,7 +175,7 @@ run() {
 
         if [ -d "$install_dir" ]; then
             echo "Directory already exists. Aborting." >&2
-            # exit 1
+            exit 1
         fi
         break
     done

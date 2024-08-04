@@ -14,7 +14,7 @@ cd MapleLegends-installer
 /path/to/MapleLegends/run.sh
 
 # Update
-cd MapleLEgends-installer
+cd MapleLegends-installer
 ./maplelegends-install.sh --update
 ```
 

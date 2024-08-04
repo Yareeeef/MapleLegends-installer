@@ -3,6 +3,20 @@
 
 Install MapleLegends on Linux. Play some nostalgic MapleStory!
 
+```sh
+# Install
+git clone https://github.com/Yareeeef/MapleLegends-installer
+cd MapleLegends-installer
+./maplelegends-install.sh /path/to/MapleLegends
+
+# Play
+/path/to/MapleLegends/run.sh
+
+# Update
+cd MapleLEgends-installer
+./maplelegends-install.sh --update
+```
+
 # Prerequisites
 
 ## Get Dependencies
@@ -48,24 +62,12 @@ Otherwise, you can run it like so:
 
 When the game updates, you need to update your installation.
 
-__1. Update the installer:__
-- If you cloned the repository:
-    ```sh
-    cd MapleLegends-installer
-    git pull
-    ```
-
-- If you downloaded the zip:
-    ```sh
-    cd MapleLegends-installer
-    ./maplelegends-install.sh --update
-    ```
-
-__2. Reinstall the game__
 ```sh
 cd MapleLegends-installer
-./maplelegends-install.sh
+./maplelegends-install.sh --update
 ```
+
+It'll attempt to detect the current installation. If it can't, it'll ask you where to install the new version.
 
 # Contributing
 

@@ -71,8 +71,12 @@ run() {
     fi
 
     if [ $mode = "update" ]; then
-        set -x
-
+        # backup current directory aside into .update so we can avoid updating it in-place.
+        update_dir="$script_dir/.update"
+        update_extracted_to="$update_dir"
+        rm -rf "$update_dir"
+        mkdir -p "$update_dir"
+            
         # if theres a .git folder its a git repo
         if [ -d "$script_dir/.gitt" ]; then
             if ! command -v git >/dev/null; then
@@ -83,10 +87,6 @@ run() {
 
             current_commit=$(git -C "$script_dir" rev-parse HEAD)
 
-            # backup current directory aside into .update so we can avoid updating it in-place.
-            update_dir="$script_dir/.update"
-            rm -rf "$update_dir"
-            mkdir -p "$update_dir"
             # note, copying aside excluding .update so we dont recursively copy
             # into ourselves.
             find "$script_dir" -mindepth 1 -maxdepth 1 -not -name ".update" -exec cp -a {} .update \; 1>/dev/null
@@ -116,21 +116,36 @@ run() {
             zip_download_to="$script_dir/.update.zip"
             curl -L -o "$zip_download_to" "$zip_download_from"
 
-            # extract in place
-
+            unzip "$zip_download_to" -d "$update_dir"
+            update_extracted_to="$update_dir/MapleLegends-installer-main"
+            rm -f "$zip_download_to"
         fi
 
         # copy back from .update to script directory
         # Note: cp -f required because some files may not be writable.
-        # find "$update_dir" -mindepth 1 -maxdepth 1 -exec cp -af {} "$script_dir/" \; 1>/dev/null
-        # rm -rf "$update_dir"
+        find "$update_extracted_to" -mindepth 1 -maxdepth 1 -exec cp -af {} "$script_dir/" \; 1>/dev/null
+        rm -rf "$update_dir"
         
-        new_version=$(cat "$update_dir/version.yml" | sed -n 's/^version\s*:\s*//p')
+        new_version=$(cat "$script_dir/version.yml" | sed -n 's/^version\s*:\s*//p')
         echo "Updated to version '${new_version}'."
-        exit 0
+        
+        install_dir=$(cat "$script_dir/current_install.txt" 2>/dev/null || echo '')
+        if [ -z "$install_dir" ]; then
+            echo "No previous installation found. Please re-install." >&2
+        elif [ ! -d "$install_dir" ]; then
+            echo "Previous installation directory not found. Please re-install." >&2
+        else
+            # check if we have write permission on $install_dir
+            if ! touch "$install_dir/.test" 2>/dev/null; then
+                echo "No write permission on previous installation directory. Please re-install." >&2
+                install_dir=""
+            fi
+            rm -f "$install_dir/.test" || true
+        fi
+    else
+        install_dir="${1:-}"
     fi
 
-    install_dir="${1:-}"
     while true; do
         if [ -z "$install_dir" ]; then
             read -p "Enter the directory where you want to install MapleLegends: " install_dir
@@ -164,6 +179,7 @@ run() {
     done
     # echo "$install_dir"
 
+    echo "$install_dir" > "$script_dir/current_install.txt"
     mkdir -p "$install_dir"
     mytmp="$install_dir/.tmp-install"
     mkdir -p "$mytmp"

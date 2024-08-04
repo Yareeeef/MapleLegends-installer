@@ -78,7 +78,7 @@ run() {
         mkdir -p "$update_dir"
             
         # if theres a .git folder its a git repo
-        if [ -d "$script_dir/.gitt" ]; then
+        if [ -d "$script_dir/.git" ]; then
             if ! command -v git >/dev/null; then
                 echo "This looks like a git repository but 'git' is not installed." >&2
                 echo "Install git and try again." >&2
@@ -114,6 +114,7 @@ run() {
         else
             zip_download_from="https://github.com/Yareeeef/MapleLegends-installer/archive/main.zip"
             zip_download_to="$script_dir/.update.zip"
+            rm -f "$zip_download_to" || true
             curl -L -o "$zip_download_to" "$zip_download_from"
 
             unzip "$zip_download_to" -d "$update_dir"

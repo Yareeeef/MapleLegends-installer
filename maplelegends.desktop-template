@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=MapleLegends
+GenericName=Game
+Comment=MapleStory Legends
+Path={{ INSTALL_DIR }}
+Exec={{ INSTALL_DIR }}/run.sh
+Icon={{ INSTALL_DIR }}/maplestory-icon.png
+Categories=Game;
+Keywords=Play;MapleStory;Maple;Story;Legends
+Hidden=false
+

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -euo pipefail
+
+install_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+wine_dir="${install_dir}/.wine"
+
+cd "${install_dir}/Game"
+WINEPREFIX="$wine_dir" WINEARCH=win32 wine "MapleLegends.exe"

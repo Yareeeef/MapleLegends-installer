@@ -74,11 +74,38 @@ run() {
         exit 1
     fi
 
+    rimraf() {
+        if [ ! -d "$1" ]; then
+            return 0
+        fi
+
+        prompt=${2:-"Will remove '$1'. Continue?"}
+        read -p "$prompt [Y/n] " REPLY
+        if expr "${REPLY:-y}" : '^[Yy]$' 1>/dev/null 2>/dev/null; then
+            rm -rf "$1"
+            return 0
+        fi
+
+        return 1
+    }
+
+    read_filepath() {
+        # on bash I can use read -e to enable filepath completions.
+        # check if we're using bash
+        REPLY=""
+        if [ -n "${BASH_VERSION:-}" ]; then
+            read -e -p "$1" REPLY
+        else
+            read -p "$1" REPLY
+        fi
+        echo $REPLY
+    }
+
     if [ $mode = "update" ]; then
         # backup current directory aside into .update so we can avoid updating it in-place.
         update_dir="$script_dir/.update"
         update_extracted_to="$update_dir"
-        rm -rf "$update_dir"
+        rimraf "$update_dir" "Removing previous update directory at '$update_dir'. Continue?"
         mkdir -p "$update_dir"
             
         # if theres a .git folder its a git repo
@@ -164,7 +191,7 @@ run() {
 
     while true; do
         if [ -z "$install_dir" ]; then
-            read -p "Enter the directory where you want to install MapleLegends: " install_dir
+            install_dir=$(read_filepath "Enter the directory where you want to install MapleLegends: ")
         fi
 
         # if not absolute path (doesn't start with /)
@@ -215,7 +242,7 @@ run() {
             echo "Downloaded file is too small. Likely something went wrong with the download." >&2
         fi
 
-        rm -rf "$install_dir"
+        rimraf "$install_dir" "There are left over files in '$install_dir'. Remove them?"
         exit 1
     fi
 
@@ -256,8 +283,7 @@ run() {
             > "$desktop_entry"
     fi
 
-    echo "Cleaning up..."
-    rm -rf "$mytmp"
+    rimraf "$mytmp" "Remove temporary files in '$mytmp'?"
 }
 
 run "$@"

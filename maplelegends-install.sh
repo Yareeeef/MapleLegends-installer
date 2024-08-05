@@ -7,10 +7,14 @@ run() {
     me=$(basename "$0")
 
     cur_version=$(cat "$script_dir/version.yml" | sed -n 's/^version\s*:\s*//p')
-    gdoc_fileid=$(cat "$script_dir/version.yml" | sed -n 's/^gdoc_fileid\s*:\s*//p')
-    if [ -z "$gdoc_fileid" ]; then
-        echo "Couldn't find gdoc_fileid in '$script_dir/version.yml'" >&2
-        exit 1
+    download_url=$(cat "$script_dir/version.yml" | sed -n 's/^download_url\s*:\s*//p')
+    if [ -z "$download_url" ]; then
+        gdoc_fileid=$(cat "$script_dir/version.yml" | sed -n 's/^gdoc_fileid\s*:\s*//p')
+        if [ -z "$gdoc_fileid" ]; then
+            echo "Couldn't find download_url or gdoc_fileid in '$script_dir/version.yml'" >&2
+            exit 1
+        fi
+        download_url="https://drive.usercontent.google.com/download?id=${gdoc_fileid}&confirm=t"
     fi
 
     # validate arguments
@@ -197,9 +201,23 @@ run() {
     mkdir -p "$mytmp"
 
     echo "Downloading game client..."
-    download_url="https://drive.usercontent.google.com/download?id=${gdoc_fileid}&confirm=t"
     download_to="$mytmp/MapleLegends.pkg"
     curl -L -o "$download_to" "$download_url"
+
+    # Some sanity checks - if the downloaded file is too small (lets say less than 1GB), its probably an error.
+    downloaded_size=$(stat -c %s "$download_to")
+    if [ $downloaded_size -lt 1000000000 ]; then
+        # Sometimes downloads are rate limited by Google Drive. Try detecting this.
+        if head -c 50000 ../MapleLegends/.tmp-install/MapleLegends.pkg | grep -q "Too many users have viewed
+ or downloaded this file recently"; then
+            echo "Download failed. Google Drive rate limit reached. Try again later." >&2
+        else
+            echo "Downloaded file is too small. Likely something went wrong with the download." >&2
+        fi
+
+        rm -rf "$install_dir"
+        exit 1
+    fi
 
     echo "Extracting game client..."
     extract_to="$mytmp/extracted"
@@ -219,6 +237,7 @@ run() {
     echo "Patching..."
     cp -vf "$script_dir/ws2_32.dll" "$winedir/drive_c/windows/system32/ws2_32.dll"
     cp -vf "$script_dir/ws2help.dll" "$winedir/drive_c/windows/system32/ws2help.dll"
+    cp -vf "$script_dir/ijl15.dll" "$game_dir/ijl15.dll"
     cp -vf "$script_dir/maplestory-icon.png" "$install_dir/maplestory-icon.png"
     cp -vf "$script_dir/run.sh-template" "$install_dir/run.sh"
     chmod +x "$install_dir/run.sh"

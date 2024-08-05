@@ -80,6 +80,7 @@ It should be super easy to DIY tho. Assuming nothing changes with how the game i
 1. Go to https://forum.maplelegends.com/index.php?threads/new-full-version-july-14-2024.23264/ and find the url for the MAC Wineskin version.
 2. The url looks something like https://drive.google.com/file/d/1O61pmNRqaSBbFo8QGJFIPBqOagtX5E8x/view?usp=share_link. Copy the random letters part between `d/` and `/view` (in this case `1O61pmNRqaSBbFo8QGJFIPBqOagtX5E8x`)
 3. Put it in `version.yml` in the `gdoc_fileid` field.
-4. (Optional) While your'e in `version.yml`, update the `version` field to the new version name.
+4. Also in `version.yml` clear out the `download_url` field.
+5. (Optional) While your'e in `version.yml`, update the `version` field to the new version name.
 
 If you have any suggestions or improvements, feel free to open an issue or a pull request!

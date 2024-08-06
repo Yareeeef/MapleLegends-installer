@@ -264,7 +264,6 @@ run() {
     echo "Patching..."
     cp -vf "$script_dir/ws2_32.dll" "$winedir/drive_c/windows/system32/ws2_32.dll"
     cp -vf "$script_dir/ws2help.dll" "$winedir/drive_c/windows/system32/ws2help.dll"
-    cp -vf "$script_dir/ijl15.dll" "$game_dir/ijl15.dll"
     cp -vf "$script_dir/maplestory-icon.png" "$install_dir/maplestory-icon.png"
     cp -vf "$script_dir/run.sh-template" "$install_dir/run.sh"
     chmod +x "$install_dir/run.sh"

@@ -13,7 +13,7 @@ if command -v wine32 >/dev/null; then
     wine_arch="win32"
 else
     wine_exec="wine"
-    wine_arch=""
+    wine_arch="wow64"
 fi
 
 WINEPREFIX="$wine_dir" WINEARCH=$wine_arch $wine_exec "$executable_name"

@@ -112,7 +112,12 @@ run() {
         wine_arch="win32"
     else
         wine_exec="wine"
-        wine_arch=""
+        wine_arch="wow64"
+
+        if ! command -v "winetricks" >/dev/null; then
+            echo "Warning: 'winetricks' command not found. In Wine's wow64 mode this script needs winetricks to install dxvk" >&2
+            exit 1
+        fi
     fi
 
     rimraf() {
@@ -345,6 +350,11 @@ run() {
     echo "Preparing Wine prefix..."
     winedir="$install_dir/.wine"
     WINEPREFIX="$winedir" WINEARCH=$wine_arch $wine_exec winecfg -v win98
+
+    if [ "$wine_arch" = "wow64" ]; then
+        echo "Installing dxvk via winetricks..."
+        WINEPREFIX="$winedir" winetricks -q dxvk
+    fi
 
     echo "Patching..."
     cp -vf "$script_dir/ws2_32.dll" "$winedir/drive_c/windows/system32/ws2_32.dll"
